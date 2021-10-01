@@ -372,6 +372,7 @@ namespace TrainStation
         }
         string destinationMessage;
         ICue cue;
+        GameLocation destination;
 
         private void AttemptToWarpBoat(BoatStop stop)
         {
@@ -393,6 +394,8 @@ namespace TrainStation
                 return;
             }
             LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
+            destination = request.Location;
+            
             request.OnWarp += Request_OnWarp;
             destinationMessage = Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
 
@@ -407,7 +410,10 @@ namespace TrainStation
 
         private void Request_OnWarp()
         {
-            Game1.pauseThenMessage(3000, destinationMessage, false);
+            if (destination.currentEvent == null)
+            {
+                Game1.pauseThenMessage(3000, destinationMessage, false);
+            }
             finishedTrainWarp = true;
         }
 
